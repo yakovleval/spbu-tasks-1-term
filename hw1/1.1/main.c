@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-long long evaluatePolynom(int x) { // in two multiplications
+long long evaluatePolynom(int x) {
     long long firstMultiplication = x * x;
     return firstMultiplication * (firstMultiplication + x) + firstMultiplication + x + 1;
 }
