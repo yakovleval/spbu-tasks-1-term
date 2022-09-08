@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.23)
-project(1_4 C)
+project(1.4 C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(1_4 main.c)
+add_executable(1.4 main.c)
