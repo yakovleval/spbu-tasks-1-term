@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#define MAX_LENGTH 256;
+#define MAX_LENGTH 256
 
 void evalPiFunction(const char *string, int *piFunction) {
     piFunction[0] = 0;
