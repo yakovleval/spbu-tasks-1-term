@@ -24,7 +24,7 @@ int main() {
     } while (firstSegment < 0 || secondSegment < 0);
 
     int length = firstSegment + secondSegment;
-    int array[length]; // gcc can do this
+    int array[length];
 
     printf("введите элементы массива через пробел: \n");
     for (int i = 0; i < length; i++) {
