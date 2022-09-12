@@ -13,14 +13,14 @@ int zerosNumber(const int *array) {
 
 int main() {
     printf("введите через пробел элементы массива (целые числа, -1 -- конец массива)\n");
-    int array[MAX_LENGTH] = {0};
-    int i = 0;
     int read = 0;
+    int count = 0;
     do {
         scanf("%d", &read);
-        array[i] = read;
-        i++;
+        if (read == 0) {
+            count++;
+        }
     } while (read != -1);
-    printf("количество нулей в массиве равно %d\n", zerosNumber(array));
+    printf("количество нулей в массиве равно %d\n", count);
     return 0;
 }
