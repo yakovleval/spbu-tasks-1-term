@@ -7,8 +7,8 @@ float evaluatePolynom(float x) {
 
 int main() {
     float x = 0;
-    prfloatf("Введите целое число: ");
-    scanf("%d", &x);
-    prfloatf("Результат равен %lld\n", evaluatePolynom(x));
+    printf("Введите число: ");  
+    scanf("%f", &x);
+    printf("Результат равен %f\n", evaluatePolynom(x));
     return 0;
 }
