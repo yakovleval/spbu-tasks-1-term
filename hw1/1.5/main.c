@@ -9,16 +9,26 @@ bool isSameType(const char leftBrace, const char rightBrace) {
     leftBrace == '<' && rightBrace == '>';
 }
 
-bool areBracketsBalanced(const char *brackets) {
-    char stack[strlen(brackets) + 1];
+bool isBracket(const char symbol) {
+    return symbol == '(' || symbol == ')' ||
+    symbol == '[' || symbol == ']' ||
+    symbol == '{' || symbol == '}' ||
+    symbol == '<' || symbol == '>';
+}
+
+bool areBracketsBalanced(const char *string) {
+    char stack[strlen(string) + 1];
     int topIndex = 0; // points to first free index
-    for (int i = 0; i < strlen(brackets); i++) {
-        switch (brackets[i]) {
+    for (int i = 0; i < strlen(string); i++) {
+        if (!isBracket(string[i])) {
+            continue;
+        }
+        switch (string[i]) {
             case '(':
             case '[':
             case '{':
             case '<':
-                stack[topIndex] = brackets[i];
+                stack[topIndex] = string[i];
                 topIndex++;
                 break;
             case ')':
@@ -26,7 +36,7 @@ bool areBracketsBalanced(const char *brackets) {
             case '}':
             case '>':
                 if (topIndex == 0 ||
-                    !isSameType(stack[topIndex - 1], brackets[i])) {
+                    !isSameType(stack[topIndex - 1], string[i])) {
                     return false;
                 }
                 topIndex--;
@@ -39,11 +49,11 @@ bool areBracketsBalanced(const char *brackets) {
 }
 
 int main() {
-    char brackets[256] = {0};
-    printf("введите последовательность из скобок (), [], {} или <>: \n");
-    scanf("%255s", brackets);
-    printf(areBracketsBalanced(brackets) ?
-    "скобочная последовательность правильная\n" :
-    "скобочная последовательность неправильная\n");
+    char string[256] = {0};
+    printf("введите строку: \n");
+    scanf("%255s", string);
+    printf(areBracketsBalanced(string) ?
+    "скобки сбалансированы\n" :
+    "скобки несбалансированы\n");
     return 0;
 }
