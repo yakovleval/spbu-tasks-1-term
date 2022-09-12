@@ -2,9 +2,9 @@
 #include <string.h>
 #define MAX_LENGTH 256
 
-void evalPiFunction(const char *string, int *piFunction) {
+void evalPiFunction(const char *string, unsigned length, int *piFunction) {
     piFunction[0] = 0;
-    for (int i = 1; i < strlen(string); i++) {
+    for (int i = 1; i < length; i++) {
         int j = piFunction[i - 1];
         while (j > 0 && string[i] != string[j]) {
             j = piFunction[j - 1];
@@ -17,16 +17,19 @@ void evalPiFunction(const char *string, int *piFunction) {
 }
 
 int occurencesNumber(const char *substring, const char *string) {
-    // building "substring$string" for p-function
+    // building "substring\0string" for p-function
     char resultString[MAX_LENGTH * 2 + 2] = {0};
     strcpy(resultString, substring);
     strcat(resultString, "$");
     strcat(resultString, string);
 
+    unsigned length = strlen(resultString);
+    resultString[strlen(substring)] = '\0';
+
     int piFunction[MAX_LENGTH * 2 + 2] = {0};
-    evalPiFunction(resultString, piFunction);
+    evalPiFunction(resultString, length, piFunction);
     int count = 0;
-    for (unsigned i = strlen(substring) + 1; i < strlen(resultString); i++) {
+    for (unsigned i = strlen(substring) + 1; i < length; i++) {
         if (piFunction[i] == strlen(substring)) {
             count++;
         }
