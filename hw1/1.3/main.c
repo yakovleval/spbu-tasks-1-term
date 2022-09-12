@@ -17,11 +17,13 @@ void reverseSubarray(int *array, int start, int end) {
 
 int main() {
     int firstSegment = 0, secondSegment = 0;
-
-    do {
+    printf("введите длины первого и второго отрезков массива (m и n): ");
+    scanf("%d%d", &firstSegment, &secondSegment);
+    while (firstSegment < 0 || secondSegment < 0) {
+        printf("длины отрезков не могут быть отрицательными\n");
         printf("введите длины первого и второго отрезков массива (m и n): ");
         scanf("%d%d", &firstSegment, &secondSegment);
-    } while (firstSegment < 0 || secondSegment < 0);
+    }
 
     int length = firstSegment + secondSegment;
     int array[length];
