@@ -41,8 +41,6 @@ bool areBracketsBalanced(const char *string) {
                 }
                 topIndex--;
                 break;
-            default:
-                return false;
         }
     }
     return topIndex == 0;
