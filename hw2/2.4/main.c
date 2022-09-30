@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
 
 void swap(int *left, int *right) {
     const int tmp = *left;
@@ -68,6 +69,7 @@ bool isPassed() {
 }
 
 int main() {
+    setlocale(LC_ALL, "RU-ru");
     if (!isPassed()) {
         printf("тесты не пройдены\n");
         return 0;
