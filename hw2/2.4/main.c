@@ -1,7 +1,4 @@
-#include <stdio.h>
 #include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
 #include <locale.h>
 
 void swap(int *left, int *right) {
@@ -29,7 +26,7 @@ void partition(int *array, const int size, const int pivot) {
 }
 
 bool isParted(const int *array, const int size, const int pivot) {
-    size_t index = 0;
+    int index = 0;
     while (array[index] < pivot) {
         index++;
     }
@@ -41,6 +38,9 @@ bool isParted(const int *array, const int size, const int pivot) {
 
 bool testPartition(const int *array, const int size, const int pivot) {
     int *testArray = (int *) calloc(size, sizeof(int));
+    if (!testArray) {
+        return false;
+    }
     memcpy(testArray, array, size * sizeof(int));
     partition(testArray, size, pivot);
     const bool result = isParted(testArray, size, pivot);
@@ -62,7 +62,7 @@ bool isPassed() {
             };
     const int pivots[6] = {3, 3, 3, 5, 1, 3};
     bool result = true;
-    for (size_t i = 0; i < testArraysNumber; i++) {
+    for (int i = 0; i < testArraysNumber; i++) {
         result &= testPartition(testArrays[i], testArraysSize, pivots[i]);
     }
     return result;
@@ -83,6 +83,10 @@ int main() {
     } while (size < 0);
 
     int *array = (int *) calloc(size, sizeof(int));
+    if (!array) {
+        printf("ошибка выделения памяти\n");
+        return 0;
+    }
     srand(239);
     printf("исходный массив: \n");
     for (int i = 0; i < size; i++) {
