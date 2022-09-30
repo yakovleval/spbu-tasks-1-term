@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <locale.h>
 
 double powerLinear(const int base, const int power) {
     if (base == 0) {
@@ -56,6 +57,7 @@ bool isPassed() {
 }
 
 int main() {
+    setlocale(LC_ALL, "RU-ru");
     if (!isPassed()) {
         printf("Тесты не пройдены\n");
         return 0;
