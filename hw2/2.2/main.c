@@ -10,30 +10,29 @@ double powerLinear(const int base, const int power) {
         return 1;
     }
     double result = 1;
-    int absPower = abs(power);
-    while (absPower > 0) {
+    for (int absPower = abs(power); absPower > 0; absPower--) {
         result *= base;
-        absPower--;
     }
     return power > 0 ? result : (1.0 / result);
 }
 
+double absPowerLogarithmic(const int base, const int absPower) {
+    if (absPower == 0) {
+        return 1;
+    }
+    if (absPower % 2 == 1) {
+        return absPowerLogarithmic(base, absPower - 1) * base;
+    } else {
+        double result = absPowerLogarithmic(base, absPower / 2);
+        return result * result;
+    }
+}
 double powerLogarithmic(const int base, const int power) {
     if (base == 0) {
         return 0;
     }
-    if (power == 0) {
-        return 1;
-    }
-    int absPower = abs(power);
-    if (absPower % 2 == 1) {
-        const double result = powerLogarithmic(base, absPower - 1) * base;
-        return power > 0 ? result : (1.0 / result);
-    } else {
-        double result = powerLogarithmic(base, absPower / 2);
-        result *= result;
-        return power > 0 ? result : (1.0 / result);
-    }
+    double result = absPowerLogarithmic(base, abs(power));
+    return power < 0 ? 1.0 / result : result;
 }
 
 bool testPower(const int base, const int power, const double answer) {
