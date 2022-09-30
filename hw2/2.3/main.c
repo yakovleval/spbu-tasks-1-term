@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
 #include <time.h>
+#include <locale.h>
+#define ARRAY_SIZE 1e4
 
 void bubbleSort(int *array, const size_t size) {
     for (size_t i = 0; i < size - 1; i++) {
@@ -95,27 +95,27 @@ bool isPassed() {
 }
 
 int main() {
+    setlocale(LC_ALL, "RU-ru");
     if (!isPassed()) {
         printf("тесты не пройдены\n");
         return 0;
     }
     printf("тесты пройдены\n");
-
-    const int arraySize = (int) 1e4;
+    
     int arrayBubble[(int) 1e4] = {0};
     int arrayCount[(int) 1e4] = {0};
     srand(239);
-    for (int i = 0; i < arraySize; i++) {
+    for (int i = 0; i < ARRAY_SIZE; i++) {
         arrayBubble[i] = rand() % 1000;
         arrayCount[i] = arrayBubble[i];
     }
 
     const clock_t startBubble = clock();
-    bubbleSort(arrayBubble, arraySize);
+    bubbleSort(arrayBubble, ARRAY_SIZE);
     const clock_t elapsedBubble = clock() - startBubble;
 
     const clock_t startCount = clock();
-    countSort(arrayCount, arraySize);
+    countSort(arrayCount, ARRAY_SIZE);
     const clock_t elapsedCount = clock() - startCount;
 
     printf("пузырёк отработал за %f сек.\n", (double) elapsedBubble / CLOCKS_PER_SEC);
