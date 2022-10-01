@@ -1,8 +1,5 @@
-#include <stdio.h>
 #include <locale.h>
 #include <stdbool.h>
-#include <stdlib.h>
-#include <memory.h>
 
 #define TEST_ARRAYS_NUMBER 10
 #define ARRAYS_SIZE 50
