@@ -1,7 +1,5 @@
-#include <stdio.h>
 #include <locale.h>
 #include <stdbool.h>
-#include <stdlib.h>
 
 #define TEST_ARRAY_SIZE 50
 
@@ -117,7 +115,7 @@ bool isPassed() {
 
     quickSort(testArray, 0, TEST_ARRAY_SIZE - 1);
     bool result = true;
-    for (size_t i = 0; i < TEST_ARRAY_SIZE; i++) {
+    for (int i = 0; i < TEST_ARRAY_SIZE; i++) {
         result &= testBinSearch(testArray, TEST_ARRAY_SIZE, testKeys[i]);
     }
     return result;
