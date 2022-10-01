@@ -71,23 +71,110 @@ void quickSort(int *array, const int leftBound, const int rightBound) {
     quickSort(array, leftPartIndex, rightBound);
 }
 
-bool binSearch(const int *array, const int size, const int key) {
-    // leftBound <= key, rightBound > key
-    int leftBound = 0;
-    int rightBound = size;
-    while (rightBound - leftBound > 1) {
-        int middle = (leftBound + rightBound) / 2;
-        if (array[middle] <= key) {
-            leftBound = middle;
+int mostFrequent(const int *array, const int size) {
+    int *sortedArray = calloc(size, sizeof(int));
+    memcpy(sortedArray, array, size * sizeof(int));
+    quickSort(sortedArray, 0, size - 1);
+    int answer = sortedArray[0];
+    int current = answer;
+    int maxCount = 1;
+    int count = 1;
+    for (int i = 1; i < size; i++) {
+        if (sortedArray[i] == current) {
+            count++;
         } else {
-            rightBound = middle;
+            if (count > maxCount) {
+                maxCount = count;
+                answer = sortedArray[i - 1];
+            }
+            count = 1;
+            current = sortedArray[i];
         }
     }
-    return array[leftBound] == key;
+    if (count > maxCount) {
+        maxCount = count;
+        answer = sortedArray[size - 1];
+        count = 1;
+    }
+    free(sortedArray);
+    return answer;
+}
+
+bool checkMostFrequent(const int *array, const int size, const int element) {
+    int maxFrequency = 0;
+    for (int i = 0; i < size; i++) {
+        int count = 0;
+        for (int j = 0; j < size; j++) {
+            if (array[j] == array[i]) {
+                count++;
+            }
+        }
+        if (count > maxFrequency) {
+            maxFrequency = count;
+        }
+    }
+    int countElement = 0;
+    for (int i = 0; i < size; i++) {
+        if (array[i] == element) {
+            countElement++;
+        }
+    }
+    return countElement == maxFrequency;
+}
+
+void generateRandomArray(int *array, const int size) {
+    for (int i = 0; i < size; i++) {
+        array[i] = rand() % size;
+    }
+}
+
+bool testMostFrequent(const int *array, const int size) {
+    return checkMostFrequent(array, size, mostFrequent(array, size));
+}
+
+bool testRandomArrays() {
+//    const int testArraysNumber = 10;
+//    const int arraysSize = 50;
+#define TEST_ARRAYS_NUMBER 10
+#define ARRAYS_SIZE 50
+    int *testArrays[TEST_ARRAYS_NUMBER] = {NULL};
+    for (int i = 0; i < TEST_ARRAYS_NUMBER; i++) {
+        testArrays[i] = (int *) calloc(ARRAYS_SIZE, sizeof(int));
+        generateRandomArray(testArrays[i], ARRAYS_SIZE);
+    }
+    bool result = true;
+    for (int i = 0; i < TEST_ARRAYS_NUMBER; i++) {
+        result &= testMostFrequent(testArrays[i], ARRAYS_SIZE);
+    }
+
+    for (int i = 0; i < TEST_ARRAYS_NUMBER; i++) {
+        free(testArrays[i]);
+    }
+    return result;
+}
+
+bool testOneElement() {
+    const int testArray[] = {239};
+    return testMostFrequent(testArray, sizeof(testArray) / sizeof(int));
+}
+
+bool testAllEqual() {
+    const int testArray[] = {2, 2, 2, 2, 2};
+    return testMostFrequent(testArray, sizeof(testArray) / sizeof(int));
+}
+
+bool isPassed() {
+    return testRandomArrays() &&
+           testOneElement() &&
+           testAllEqual();
 }
 
 int main() {
     setlocale(LC_ALL, "RU-ru");
-    printf("Hello, World!\n");
+    if (!isPassed()) {
+        printf("тесты не пройдены\n");
+        return 0;
+    }
+    printf("тесты пройдены\n");
     return 0;
 }
