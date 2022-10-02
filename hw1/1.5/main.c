@@ -17,7 +17,7 @@ bool isBracket(const char symbol) {
 }
 
 bool areBracketsBalanced(const char *string) {
-    char stack[strlen(string) + 1];
+    char *stack = calloc(strlen(string) + 1, sizeof(char));
     int topIndex = 0; // points to first free index
     for (int i = 0; i < strlen(string); i++) {
         if (!isBracket(string[i])) {
@@ -37,12 +37,14 @@ bool areBracketsBalanced(const char *string) {
             case '>':
                 if (topIndex == 0 ||
                     !isSameType(stack[topIndex - 1], string[i])) {
+                    free(stack);
                     return false;
                 }
                 topIndex--;
                 break;
         }
     }
+    free(stack);
     return topIndex == 0;
 }
 
