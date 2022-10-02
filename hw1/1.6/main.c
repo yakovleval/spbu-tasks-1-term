@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <locale.h>
 #define MAX_LENGTH 256
 
 void evalPiFunction(const char *string, unsigned length, int *piFunction) {
@@ -17,14 +18,13 @@ void evalPiFunction(const char *string, unsigned length, int *piFunction) {
 }
 
 int occurencesNumber(const char *substring, const char *string) {
-    // building "substring\0string" for p-function
+    // building "substring+\n+string" for p-function
     char resultString[MAX_LENGTH * 2 + 2] = {0};
     strcpy(resultString, substring);
-    strcat(resultString, "$");
+    strcat(resultString, "\n");
     strcat(resultString, string);
 
     unsigned length = strlen(resultString);
-    resultString[strlen(substring)] = '\0';
 
     int piFunction[MAX_LENGTH * 2 + 2] = {0};
     evalPiFunction(resultString, length, piFunction);
@@ -38,6 +38,7 @@ int occurencesNumber(const char *substring, const char *string) {
 }
 
 int main() {
+    setlocale(LC_ALL, "RU-ru");
     char string[MAX_LENGTH + 1] = {0};
     printf("введите исходную строку: \n");
     scanf("%255s", string);
