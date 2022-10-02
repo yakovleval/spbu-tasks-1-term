@@ -1,17 +1,8 @@
 #include <stdio.h>
-#define MAX_LENGTH 256
-
-int zerosNumber(const int *array) {
-    int count = 0;
-    for (int i = 0; array[i] != -1; i++) {
-        if (array[i] == 0) {
-            count++;
-        }
-    }
-    return count;
-}
+#include <locale.h>
 
 int main() {
+    setlocale(LC_ALL, "RU-ru");
     printf("введите через пробел элементы массива (целые числа, -1 -- конец массива)\n");
     int read = 0;
     int count = 0;
