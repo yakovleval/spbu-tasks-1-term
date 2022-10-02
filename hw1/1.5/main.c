@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <locale.h>
 
 bool isSameType(const char leftBrace, const char rightBrace) {
     return leftBrace == '(' && rightBrace == ')' ||
@@ -49,6 +50,7 @@ bool areBracketsBalanced(const char *string) {
 }
 
 int main() {
+    setlocale(LC_ALL, "RU-ru");
     char string[256] = {0};
     printf("введите строку: \n");
     scanf("%255s", string);
