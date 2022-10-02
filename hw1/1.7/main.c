@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <locale.h>
 
 void eratosthenesSieve(int maxNumber, bool *isPrime) {
     for (int i = 0; i <= maxNumber; i++) {
@@ -16,6 +17,7 @@ void eratosthenesSieve(int maxNumber, bool *isPrime) {
 }
 
 int main() {
+    setlocale(LC_ALL, "RU-ru");
     int maxNumber = 0;
     printf("Введите число, до которого нужно вывести простые: ");
     scanf("%d", &maxNumber);
