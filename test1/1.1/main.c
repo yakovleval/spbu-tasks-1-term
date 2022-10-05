@@ -1,9 +1,21 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <locale.h>
+#include <memory.h>
+#include <stdlib.h>
 
 #define TEST_ARRAYS_NUMBER 10
 #define ARRAYS_SIZE 10
+
+void insertionSort(int *array, const int leftBound, const int rightBound) {
+    for (int i = leftBound + 1; i <= rightBound; i++) {
+        for (int j = i - 1; j >= leftBound && array[j] > array[j + 1]; j--) {
+            const int tmp = array[j];
+            array[j] = array[j + 1];
+            array[j + 1] = tmp;
+        }
+    }
+}
 
 void insertionEvenSort(int *array, const int leftBound, const int rightBound) {
     for (int i = leftBound + 1; i <= rightBound; i++) {
@@ -12,7 +24,7 @@ void insertionEvenSort(int *array, const int leftBound, const int rightBound) {
         }
         int nextEven = i;
         for (int j = i - 1; j >= leftBound; j--) {
-            if (array[j] % 2 == 1 || array[j] <= array[i]) {
+            if (array[j] % 2 == 1 || array[j] <= array[nextEven]) {
                 continue;
             }
             const int tmp = array[j];
@@ -25,9 +37,28 @@ void insertionEvenSort(int *array, const int leftBound, const int rightBound) {
 
 void generateRandomEvenArray(int *array, const int size) {
     for (int i = 0; i < size; i++) {
-        array[i] = rand();
+        array[i] = rand() % size;
         array[i] = array[i] % 2 == 1 ? array[i] + 1 : array[i];
     }
+}
+
+bool isEqual(const int* left, const int *right, const int size) {
+    for (int i = 0; i < size; i++) {
+        if (left[i] != right[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool testEvenSort(int *array, const int size) {
+    int *sortedArray = calloc(size, sizeof(int));
+    memcpy(sortedArray, array, size * sizeof(int));
+    insertionSort(sortedArray, 0, size - 1);
+    insertionEvenSort(array, 0, size - 1);
+    bool result = isEqual(sortedArray, array, size);
+    free(sortedArray);
+    return result;
 }
 
 bool testRandomArrays() {
@@ -39,7 +70,7 @@ bool testRandomArrays() {
 
     bool result = true;
     for (int i = 0; i < TEST_ARRAYS_NUMBER; i++) {
-        result &= testQuickSort(testArrays[i], ARRAYS_SIZE);
+        result &= testEvenSort(testArrays[i], ARRAYS_SIZE);
     }
     for (int i = 0; i < TEST_ARRAYS_NUMBER; i++) {
         free(testArrays[i]);
@@ -53,6 +84,9 @@ bool isPassed() {
 
 int main() {
     setlocale(LC_ALL, "RU-ru");
-    printf("Hello, World!\n");
+    if (!isPassed()) {
+        printf("тесты не пройдены\n");
+        return 0;
+    }
     return 0;
 }
