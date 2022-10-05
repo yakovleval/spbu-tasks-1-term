@@ -88,5 +88,23 @@ int main() {
         printf("тесты не пройдены\n");
         return 0;
     }
+    printf("введите размер массива:\n");
+    int size = 0;
+    scanf("%d", &size);
+    if (size <= 0) {
+        return 0;
+    }
+    printf("введите элементы массива через пробел\n");
+    int *array = calloc(size, sizeof(int));
+    for (int i = 0; i < size; i++) {
+        scanf("%d", &array[i]);
+    }
+    insertionEvenSort(array, 0, size - 1);
+
+    printf("отсортированный массив\n");
+    for (int i = 0; i < size; i++) {
+        printf("%d ", array[i]);
+    }
+    free(array);
     return 0;
 }
