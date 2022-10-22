@@ -11,49 +11,50 @@ bool isSameType(const char leftBrace, const char rightBrace) {
            leftBrace == '<' && rightBrace == '>';
 }
 
-bool isBracket(const char symbol) {
-    return symbol == '(' || symbol == ')' ||
-           symbol == '[' || symbol == ']' ||
-           symbol == '{' || symbol == '}' ||
-           symbol == '<' || symbol == '>';
-}
-
 bool areBracketsBalanced(const char *string) {
-    char *stack = NULL;
-    int topIndex = 0; // points to first free index
+    Node *stack = NULL;
+    int error = 0;
     for (int i = 0; i < strlen(string); i++) {
-//        if (!isBracket(string[i])) {
-//            continue;
-//        }
         switch (string[i]) {
             case '(':
             case '[':
             case '{':
             case '<':
-                stack[topIndex] = string[i];
-                topIndex++;
+                error = push(&stack, string[i]);
+                if (error != 0) {
+                    return false;
+                }
                 break;
             case ')':
             case ']':
             case '}':
             case '>':
-                if (topIndex == 0 ||
-                    !isSameType(stack[topIndex - 1], string[i])) {
-                    free(stack);
+                if (isEmpty(stack)) {
                     return false;
                 }
-                topIndex--;
+                char topBracket = 0;
+                error = pop(&stack, &topBracket);
+                if (!isSameType(topBracket, string[i])) {
+                    deleteAll(&stack);
+                    return false;
+                }
                 break;
             default:
                 continue;
         }
     }
-    free(stack);
-    return topIndex == 0;
+    bool empty = isEmpty(stack);
+    deleteAll(&stack);
+    return empty;
 }
 
 int main() {
     setlocale(LC_ALL, "RU-ru");
-    printf("Hello, World!\n");
+    char string[256] = {0};
+    printf("введите строку: \n");
+    scanf("%255s", string);
+    printf(areBracketsBalanced(string) ?
+           "скобки сбалансированы\n" :
+           "скобки несбалансированы\n");
     return 0;
 }
