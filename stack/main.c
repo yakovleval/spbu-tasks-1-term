@@ -43,11 +43,26 @@ bool testDeleteAll() {
     for (int i = 0; i < 10; ++i) {
         int errorCode = push(&head, charToPush);
         if (errorCode != 0) {
-            free(head);
+            deleteAll(&head);
             return false;
         }
     }
     int errorCode = deleteAll(&head);
+    if (errorCode != 0) {
+        return false;
+    }
+    return isEmpty(head);
+}
+
+bool testDeleteAllOneElement() {
+    Node *head = NULL;
+    char charToPush = 'a';
+    int errorCode = push(&head, charToPush);
+    if (errorCode != 0) {
+        free(head);
+        return false;
+    }
+    errorCode = deleteAll(&head);
     if (errorCode != 0) {
         return false;
     }
@@ -57,6 +72,15 @@ bool testDeleteAll() {
 bool testIsEmpty() {
     Node *head = NULL;
     return isEmpty(head);
+}
+
+bool testTop() {
+    Node *head = NULL;
+    char charToPush = 'a';
+    push(&head, charToPush);
+    char topChar = 0;
+    int error = top(head, &topChar);
+    return error == 0 && charToPush == topChar;
 }
 
 bool testArbitrary() {
@@ -91,6 +115,8 @@ bool isPassed() {
            testPop() &&
            testIsEmpty() &&
            testDeleteAll() &&
+           testDeleteAllOneElement() &&
+           testTop() &&
            testArbitrary();
 }
 

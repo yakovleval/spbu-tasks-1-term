@@ -12,9 +12,9 @@ int push(Node **Last, char value);
 
 int pop(Node **head, char *value);
 
-int top(Node **head, char *value);
+int top(const Node *head, char *value);
 
-bool isEmpty(Node *head);
+bool isEmpty(const Node *head);
 
 int deleteAll(Node **head);
 
