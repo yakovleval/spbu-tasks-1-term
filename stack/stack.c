@@ -23,6 +23,14 @@ int pop(Node **head, char *value) {
     return 0;
 }
 
+int top(Node **head, char *value) {
+    if (head == NULL) {
+        return 1;
+    }
+    *value = (*head)->value;
+    return 0;
+}
+
 bool isEmpty(Node *head) {
     return head == NULL;
 }
