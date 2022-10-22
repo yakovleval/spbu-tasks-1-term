@@ -35,6 +35,10 @@ bool areBracketsBalanced(const char *string) {
                 }
                 char topBracket = 0;
                 error = pop(&stack, &topBracket);
+                if (error != 0) {
+                    deleteAll(&stack);
+                    return false;
+                }
                 if (!isSameType(topBracket, string[i])) {
                     deleteAll(&stack);
                     return false;
