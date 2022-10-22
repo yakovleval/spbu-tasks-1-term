@@ -4,7 +4,7 @@
 
 bool testPush() {
     Node *head = NULL;
-    char charToPush = 'a';
+    int charToPush = 'a';
     int errorCode = push(&head, charToPush);
     if (errorCode != 0) {
         free(head);
@@ -20,13 +20,13 @@ bool testPush() {
 
 bool testPop() {
     Node *head = NULL;
-    char charToPush = 'a';
+    int charToPush = 'a';
     int errorCode = push(&head, charToPush);
     if (errorCode != 0) {
         free(head);
         return false;
     }
-    char value = 0;
+    int value = 0;
     errorCode = pop(&head, &value);
     if (errorCode != 0) {
         free(head);
@@ -39,7 +39,7 @@ bool testPop() {
 
 bool testDeleteAll() {
     Node *head = NULL;
-    char charToPush = 'a';
+    int charToPush = 'a';
     for (int i = 0; i < 10; ++i) {
         int errorCode = push(&head, charToPush);
         if (errorCode != 0) {
@@ -56,7 +56,7 @@ bool testDeleteAll() {
 
 bool testDeleteAllOneElement() {
     Node *head = NULL;
-    char charToPush = 'a';
+    int charToPush = 'a';
     int errorCode = push(&head, charToPush);
     if (errorCode != 0) {
         free(head);
@@ -76,9 +76,9 @@ bool testIsEmpty() {
 
 bool testTop() {
     Node *head = NULL;
-    char charToPush = 'a';
+    int charToPush = 'a';
     push(&head, charToPush);
-    char topChar = 0;
+    int topChar = 0;
     int error = top(head, &topChar);
     return error == 0 && charToPush == topChar;
 }
@@ -89,7 +89,7 @@ bool testArbitrary() {
     push(&head, 'b');
     push(&head, 'c');
     push(&head, 'd');
-    char popedChar = 0;
+    int popedChar = 0;
     pop(&head, &popedChar);
     if (popedChar != 'd') {
         deleteAll(&head);
