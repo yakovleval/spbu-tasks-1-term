@@ -4,7 +4,7 @@
 
 bool testPush() {
     Node *head = NULL;
-    char charToPush = 'a';
+    int charToPush = 'a';
     int errorCode = push(&head, charToPush);
     if (errorCode != 0) {
         free(head);
@@ -20,13 +20,13 @@ bool testPush() {
 
 bool testPop() {
     Node *head = NULL;
-    char charToPush = 'a';
+    int charToPush = 'a';
     int errorCode = push(&head, charToPush);
     if (errorCode != 0) {
         free(head);
         return false;
     }
-    char value = 0;
+    int value = 0;
     errorCode = pop(&head, &value);
     if (errorCode != 0) {
         free(head);
@@ -39,15 +39,30 @@ bool testPop() {
 
 bool testDeleteAll() {
     Node *head = NULL;
-    char charToPush = 'a';
+    int charToPush = 'a';
     for (int i = 0; i < 10; ++i) {
         int errorCode = push(&head, charToPush);
         if (errorCode != 0) {
-            free(head);
+            deleteAll(&head);
             return false;
         }
     }
     int errorCode = deleteAll(&head);
+    if (errorCode != 0) {
+        return false;
+    }
+    return isEmpty(head);
+}
+
+bool testDeleteAllOneElement() {
+    Node *head = NULL;
+    int charToPush = 'a';
+    int errorCode = push(&head, charToPush);
+    if (errorCode != 0) {
+        free(head);
+        return false;
+    }
+    errorCode = deleteAll(&head);
     if (errorCode != 0) {
         return false;
     }
@@ -59,13 +74,22 @@ bool testIsEmpty() {
     return isEmpty(head);
 }
 
+bool testTop() {
+    Node *head = NULL;
+    int charToPush = 'a';
+    push(&head, charToPush);
+    int topChar = 0;
+    int error = top(head, &topChar);
+    return error == 0 && charToPush == topChar;
+}
+
 bool testArbitrary() {
     Node *head = NULL;
     push(&head, 'a');
     push(&head, 'b');
     push(&head, 'c');
     push(&head, 'd');
-    char popedChar = 0;
+    int popedChar = 0;
     pop(&head, &popedChar);
     if (popedChar != 'd') {
         deleteAll(&head);
@@ -91,15 +115,17 @@ bool isPassed() {
            testPop() &&
            testIsEmpty() &&
            testDeleteAll() &&
+           testDeleteAllOneElement() &&
+           testTop() &&
            testArbitrary();
 }
 
 int main() {
     setlocale(LC_ALL, "RU-ru");
     if (!isPassed()) {
-        printf("tests are not passed\n");
+        printf("тесты не пройдены\n");
         return 0;
     }
-    printf("tests are passed\n");
+    printf("тесты пройдены\n");
     return 0;
 }
