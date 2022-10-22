@@ -22,6 +22,7 @@ bool areBracketsBalanced(const char *string) {
             case '<':
                 error = push(&stack, string[i]);
                 if (error != 0) {
+                    deleteAll(&stack);
                     return false;
                 }
                 break;
