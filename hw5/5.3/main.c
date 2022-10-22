@@ -157,7 +157,11 @@ int main() {
     printf("введите выражение:\n");
     char input[MAX_BUF], output[MAX_BUF];
     scanf("%255s", input);
-    sortingStation(input, (int) strlen(input), output);
+    int error = sortingStation(input, (int) strlen(input), output);
+    if (error != 0) {
+        printf("ошибка\n");
+        return 0;
+    }
     printf("результат:\n");
     printf("%s", output);
     return 0;
