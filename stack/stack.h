@@ -4,15 +4,15 @@
 #include <stdlib.h>
 
 typedef struct Node {
-    char value;
+    int value;
     struct Node *next;
 } Node;
 
-int push(Node **Last, char value);
+int push(Node **Last, int value);
 
-int pop(Node **head, char *value);
+int pop(Node **head, int *value);
 
-int top(const Node *head, char *value);
+int top(const Node *head, int *value);
 
 bool isEmpty(const Node *head);
 

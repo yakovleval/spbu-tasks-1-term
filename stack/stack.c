@@ -1,7 +1,7 @@
 #include "stack.h"
 
 
-int push(Node **head, const char value) {
+int push(Node **head, const int value) {
     Node *newNode = (Node *) malloc(sizeof(Node));
     if (newNode == NULL || head == NULL) {
         return 1;
@@ -12,7 +12,7 @@ int push(Node **head, const char value) {
     return 0;
 }
 
-int pop(Node **head, char *value) {
+int pop(Node **head, int *value) {
     if (head == NULL || *head == NULL) {
         return 1;
     }
@@ -23,7 +23,7 @@ int pop(Node **head, char *value) {
     return 0;
 }
 
-int top(const Node * const head, char *value) {
+int top(const Node * const head, int *value) {
     if (head == NULL) {
         return 1;
     }
