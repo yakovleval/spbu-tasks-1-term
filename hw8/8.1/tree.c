@@ -9,9 +9,18 @@
 struct Node {
     struct Node *leftChild;
     struct Node *rightChild;
-    int key;
-    char *value;
+    Key key;
+    Value value;
+    int balance;
 };
+
+void freeNode(Node *node) {
+    if (node == NULL)
+        return;
+    free(node->value);
+    free(node->key);
+    free(node);
+}
 
 void freeTree(Node *root) {
     if (root == NULL) {
@@ -19,69 +28,130 @@ void freeTree(Node *root) {
     }
     freeTree(root->leftChild);
     freeTree(root->rightChild);
-    free(root->value);
-    free(root);
+    freeNode(root);
 }
 
-Node **findNode(Node **root, const Key key) {
-    while (*root != NULL && (*root)->key != key) {
-        root = (key < (*root)->key ? &(*root)->leftChild : &(*root)->rightChild);
-    }
-    return root;
+Node *findNode(Node *root, ConstKey key) {
+    if (root == NULL)
+        return NULL;
+    int comparison = strcmp(key, root->key);
+    if (comparison == 0)
+        return root;
+    return comparison < 0 ? findNode(root->leftChild, key) : findNode(root->rightChild, key);
 }
 
-char *findValue(Node *root, const int key) {
-    Node *foundNode = *findNode(&root, key);
+Value findValue(Node *root, ConstKey key) {
+    Node *foundNode = findNode(root, key);
     return foundNode == NULL ? NULL : foundNode->value;
 }
 
-Error addNode(Node **root, const Key key, ConstValue value) {
-    Node **node = findNode(root, key);
-    if (*node == NULL) {
-        *node = calloc(1, sizeof(Node));
-        if (*node == NULL) {
-            return 1;
-        }
-        (*node)->key = key;
-        (*node)->leftChild = (*node)->rightChild = NULL;
-    }
-    if ((*node)->value == NULL || strcmp((*node)->value, value) != 0) {
-        (*node)->value = calloc(strlen(value) + 1, sizeof(char));
-        if ((*node)->value == NULL) {
-            free(*node);
-            return 1;
-        }
-        strcpy((*node)->value, value);
-    }
-    return 0;
+Node *rotateLeft(Node *node) {
+    Node *right = node->rightChild;
+    Node *rleft = right->leftChild;
+    right->leftChild = node;
+    node->rightChild = rleft;
+    return right;
 }
 
-void deleteNode(Node **root, const Key key) {
-    Node **node = findNode(root, key);
-    if (*node == NULL) {
-        return;
-    }
-    if ((*node)->rightChild == NULL) {
-        Node *nodeToDelete = *node;
-        *node = (*node)->leftChild;
-        free(nodeToDelete);
-        return;
-    }
-    Node **next = &(*node)->rightChild;
-    while ((*next)->leftChild != NULL) {
-        next = &(*next)->leftChild;
-    }
+Node *rotateRight(Node *node) {
+    Node *left = node->leftChild;
+    Node *lright = left->rightChild;
+    left->rightChild = node;
+    node->leftChild = lright;
+    return left;
+}
 
-    Value tmpValue = (*node)->value;
-    (*node)->value = (*next)->value;
-    (*next)->value = tmpValue;
+Node *balance(Node *node) {
+    if (node->balance == 2) {
+        if (node->rightChild->balance >= 0)
+            return rotateLeft(node);
+        node->rightChild = rotateRight(node->rightChild);
+        return rotateLeft(node);
+    }
+    if (node->balance == -2) {
+        if (node->leftChild->balance <= 0)
+            return rotateRight(node);
+        node->leftChild = rotateLeft(node->leftChild);
+        return rotateRight(node);
+    }
+    return node;
+}
 
-    Key tmpKey = (*node)->key;
-    (*node)->key = (*next)->key;
-    (*next)->key = tmpKey;
+Node *addNewNode(Node *node, ConstKey key, ConstValue value) {
+    if (node == NULL) {
+        Node *newNode = calloc(1, sizeof(Node));
+        newNode->key = calloc(strlen(key) + 1, sizeof(char));
+        newNode->value = calloc(strlen(value) + 1, sizeof(char));
+        strcpy(newNode->key, key);
+        strcpy(newNode->value, value);
+        newNode->balance = 0;
+        return newNode;
+    } else if (strcmp(node->key, key) < 0) {
+        node->leftChild = addNewNode(node->leftChild, key, value);
+        node->balance--;
+    } else {
+        node->rightChild = addNewNode(node->rightChild, key, value);
+        node->balance++;
+    }
+    return balance(node);
+}
 
-    Node *nodeToDelete = *next;
-    *next = (*next)->rightChild;
-    free(nodeToDelete->value);
-    free(nodeToDelete);
+Node *addNode(Node *root, ConstKey key, ConstValue value) {
+    Node *foundNode = findNode(root, key);
+    if (foundNode != NULL) {
+        free(foundNode->value);
+        foundNode->value = calloc(strlen(value) + 1, sizeof(char));
+        strcpy(foundNode->value, value);
+        return root;
+    }
+    return addNewNode(root, key, value);
+}
+
+Node *deleteExistingNode(Node *node, ConstKey key) {
+    if (node == NULL) {
+        return NULL;
+    }
+    if (strcmp(key, node->key) == 0) {
+        if (node->rightChild == NULL) {
+            Node *new = node->leftChild;
+            freeNode(node);
+            return new;
+        }
+        if (node->leftChild == NULL) {
+            Node *new = node->rightChild;
+            freeNode(node);
+            return new;
+        }
+
+        Node *next = node->rightChild;
+        while (next->leftChild != NULL) {
+            next = next->leftChild;
+        }
+
+        Key tmpKey = node->key;
+        node->key = next->key;
+        next->key = tmpKey;
+
+        Value tmpVal = node->value;
+        node->value = next->value;
+        next->value = tmpVal;
+
+        node->balance--;
+        node->rightChild = deleteExistingNode(node->rightChild, key);
+        return balance(node);
+    } else if (strcmp(key, node->key) < 0) {
+        node->balance++;
+        node->leftChild = deleteExistingNode(node->leftChild, key);
+        return balance(node);
+    } else {
+        node->balance--;
+        node->rightChild = deleteExistingNode(node->rightChild, key);
+        return balance(node);
+    }
+}
+
+Node *deleteNode(Node *root, ConstKey key) {
+    if (findNode(root, key) == NULL)
+        return root;
+    deleteExistingNode(root, key);
 }
