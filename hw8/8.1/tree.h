@@ -1,12 +1,18 @@
 #ifndef INC_8_1_TREE_H
 #define INC_8_1_TREE_H
 
-typedef struct Node Node;
 typedef char* Key;
 typedef char* Value;
 typedef const char* ConstValue;
 typedef const char* ConstKey;
-typedef int Error;
+
+typedef struct Node {
+    struct Node *leftChild;
+    struct Node *rightChild;
+    Key key;
+    Value value;
+    int balance;
+} Node;
 
 // очищает память выделенную под дерево
 void freeTree(Node *root);

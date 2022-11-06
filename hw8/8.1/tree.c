@@ -6,14 +6,6 @@
 #include <string.h>
 #include "tree.h"
 
-struct Node {
-    struct Node *leftChild;
-    struct Node *rightChild;
-    Key key;
-    Value value;
-    int balance;
-};
-
 void freeNode(Node *node) {
     if (node == NULL)
         return;
@@ -47,9 +39,17 @@ Value findValue(Node *root, ConstKey key) {
 
 Node *rotateLeft(Node *node) {
     Node *right = node->rightChild;
+    int balance = right->balance;
     Node *rleft = right->leftChild;
     right->leftChild = node;
     node->rightChild = rleft;
+    if (right->balance == 0) {
+        node->balance = 1;
+        right->balance = -1;
+    } else {
+        node->balance = 0;
+        right->balance = 0;
+    }
     return right;
 }
 
@@ -58,6 +58,13 @@ Node *rotateRight(Node *node) {
     Node *lright = left->rightChild;
     left->rightChild = node;
     node->leftChild = lright;
+    if (left->balance == 0) {
+        node->balance = -1;
+        left->balance = 1;
+    } else {
+        node->balance = 0;
+        left->balance = 0;
+    }
     return left;
 }
 
@@ -86,7 +93,7 @@ Node *addNewNode(Node *node, ConstKey key, ConstValue value) {
         strcpy(newNode->value, value);
         newNode->balance = 0;
         return newNode;
-    } else if (strcmp(node->key, key) < 0) {
+    } else if (strcmp(key, node->key) < 0) {
         node->leftChild = addNewNode(node->leftChild, key, value);
         node->balance--;
     } else {

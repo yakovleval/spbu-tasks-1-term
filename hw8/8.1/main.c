@@ -1,15 +1,16 @@
 #include <stdio.h>
 #include <locale.h>
-#include "tree.h"
 #include <stdbool.h>
+#include "tree.h"
+#include "tests.h"
 #define MAX_BUFFER 256
 
 int main() {
     setlocale(LC_ALL, "RU-ru");
-//    if (!isPassed()) {
-//        printf("Тесты не пройдены\n");
-//        return 0;
-//    }
+
+    if (!isPassed()) {
+        return 0;
+    }
 
     printf("0 -- выход\n");
     printf("1 -- добавить/заменить значение по ключу\n");
