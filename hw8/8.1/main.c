@@ -55,7 +55,7 @@ int main() {
             case 4:
                 printf("введите ключ: \n");
                 scanf("%255s", key);
-                deleteNode(root, key);
+                root = deleteNode(root, key);
                 break;
             default:
                 printf("неизвестная команда\n");
