@@ -8,5 +8,6 @@ typedef struct Date {
 } Date;
 
 int cmpDates(Date left, Date right);
+Date findMaxDate(FILE *in);
 
 #endif //INC_2_1_DATE_H
