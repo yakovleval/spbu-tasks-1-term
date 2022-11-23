@@ -48,3 +48,10 @@ int deleteAll(Node **head) {
     }
     return 0;
 }
+
+void print(Node *head) {
+    if (head == NULL)
+        return;
+    print(head->next);
+    printf("%d ", head->value);
+}

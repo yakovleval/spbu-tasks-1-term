@@ -17,4 +17,6 @@ bool isEmpty(const Node *head);
 
 int deleteAll(Node **head);
 
+void print(Node *head);
+
 #endif //INC_2_2_STACK_H
