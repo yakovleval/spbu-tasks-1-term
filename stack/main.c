@@ -97,9 +97,9 @@ bool isPassed() {
 int main() {
     setlocale(LC_ALL, "RU-ru");
     if (!isPassed()) {
-        printf("tests are not passed\n");
+        printf("tests did not pass\n");
         return 0;
     }
-    printf("tests are passed\n");
+    printf("tests passed\n");
     return 0;
 }
