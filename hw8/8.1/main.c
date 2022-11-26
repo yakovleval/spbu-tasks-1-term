@@ -32,7 +32,7 @@ int main() {
                 printf("введите ключ и значение: \n");
                 scanf("%255s", key);
                 scanf("%255s", value);
-                root = addNode(root, key, value);
+                root = add(root, key, value);
                 break;
             case 2:
                 printf("введите ключ: \n");
@@ -56,7 +56,7 @@ int main() {
             case 4:
                 printf("введите ключ: \n");
                 scanf("%255s", key);
-                root = deleteNode(root, key);
+                root = delete(root, key);
                 break;
             default:
                 printf("неизвестная команда\n");

@@ -25,9 +25,9 @@ Value findValue(Node *root, ConstKey key);
 
 // добавляет ключ в дерево, меняет значение существующего
 // если ключ уже есть
-Node* addNode(Node *root, ConstKey key, ConstValue value);
+Node* add(Node *root, ConstKey key, ConstValue value);
 
 // удаляет ключ из дерева, ничего не делает если ключа нет
-Node *deleteNode(Node *root, ConstKey key);
+Node *delete(Node *root, ConstKey key);
 
 #endif //INC_8_1_TREE_H

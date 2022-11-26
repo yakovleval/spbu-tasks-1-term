@@ -1,10 +1,7 @@
 #include "tree.h"
-
-#include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include "tree.h"
 
 void freeNode(Node *node) {
     if (node == NULL)
@@ -39,7 +36,6 @@ Value findValue(Node *root, ConstKey key) {
 
 Node *rotateLeft(Node *node) {
     Node *right = node->rightChild;
-    int balance = right->balance;
     Node *rleft = right->leftChild;
     right->leftChild = node;
     node->rightChild = rleft;
@@ -84,7 +80,7 @@ Node *balance(Node *node) {
     return node;
 }
 
-Node *addNewNode(Node *node, ConstKey key, ConstValue value) {
+Node *addNode(Node *node, ConstKey key, ConstValue value, bool *isBalanceChanged) {
     if (node == NULL) {
         Node *newNode = calloc(1, sizeof(Node));
         newNode->key = calloc(strlen(key) + 1, sizeof(char));
@@ -93,31 +89,43 @@ Node *addNewNode(Node *node, ConstKey key, ConstValue value) {
         strcpy(newNode->value, value);
         newNode->balance = 0;
         return newNode;
-    } else if (strcmp(key, node->key) < 0) {
-        node->leftChild = addNewNode(node->leftChild, key, value);
-        node->balance--;
-    } else {
-        node->rightChild = addNewNode(node->rightChild, key, value);
-        node->balance++;
     }
+    int comparison = strcmp(key, node->key);
+    int balanceDelta = 0;
+    if (comparison == 0) {
+        free(node->value);
+        node->value = calloc(strlen(value) + 1, sizeof(char));
+        strcpy(node->value, value);
+        *isBalanceChanged = false;
+        return node;
+    } else if (comparison < 0) {
+        node->leftChild = addNode(node->leftChild, key, value, isBalanceChanged);
+        balanceDelta = -1;
+    } else {
+        node->rightChild = addNode(node->rightChild, key, value, isBalanceChanged);
+        balanceDelta = 1;
+    }
+    if (!*isBalanceChanged)
+        return node;
+    node->balance += balanceDelta;
+    if (node->balance != 1 && node->balance != -1)
+        *isBalanceChanged = false;
     return balance(node);
 }
 
-Node *addNode(Node *root, ConstKey key, ConstValue value) {
-    Node *foundNode = findNode(root, key);
-    if (foundNode != NULL) {
-        free(foundNode->value);
-        foundNode->value = calloc(strlen(value) + 1, sizeof(char));
-        strcpy(foundNode->value, value);
-        return root;
-    }
-    return addNewNode(root, key, value);
+Node *add(Node *root, ConstKey key, ConstValue value) {
+    if (key == NULL || value == NULL)
+        return NULL;
+    bool balanceChanged = true;
+    return addNode(root, key, value, &balanceChanged);
 }
 
-Node *deleteExistingNode(Node *node, ConstKey key) {
+Node *deleteNode(Node *node, ConstKey key, bool *isBalanceChanged) {
     if (node == NULL) {
+        *isBalanceChanged = false;
         return NULL;
     }
+    int balanceDelta = 0;
     if (strcmp(key, node->key) == 0) {
         if (node->rightChild == NULL) {
             Node *new = node->leftChild;
@@ -143,22 +151,24 @@ Node *deleteExistingNode(Node *node, ConstKey key) {
         node->value = next->value;
         next->value = tmpVal;
 
-        node->balance--;
-        node->rightChild = deleteExistingNode(node->rightChild, key);
-        return balance(node);
+        node->rightChild = deleteNode(node->rightChild, key, isBalanceChanged);
+        balanceDelta = -1;
     } else if (strcmp(key, node->key) < 0) {
-        node->balance++;
-        node->leftChild = deleteExistingNode(node->leftChild, key);
-        return balance(node);
+        node->leftChild = deleteNode(node->leftChild, key, isBalanceChanged);
+        balanceDelta = 1;
     } else {
-        node->balance--;
-        node->rightChild = deleteExistingNode(node->rightChild, key);
-        return balance(node);
+        node->rightChild = deleteNode(node->rightChild, key, isBalanceChanged);
+        balanceDelta = -1;
     }
+    if (!*isBalanceChanged)
+        return node;
+    node->balance += balanceDelta;
+    if (node->balance == 1 || node->balance == -1)
+        *isBalanceChanged = false;
+    return balance(node);
 }
 
-Node *deleteNode(Node *root, ConstKey key) {
-    if (findNode(root, key) == NULL)
-        return root;
-    deleteExistingNode(root, key);
+Node *delete(Node *root, ConstKey key) {
+    bool balanceChanged = true;
+    return deleteNode(root, key, &balanceChanged);
 }
