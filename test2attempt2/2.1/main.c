@@ -19,7 +19,7 @@ int stringToInt(const char *buffer, int size) {
 }
 
 int parseNumber(const char *buffer, int *strIndex, int size, int *result) {
-    char number[INT_LEN] = {'a'};
+    char number[INT_LEN] = {0};
     int numberIndex = 0;
     if ('0' > buffer[*strIndex] || buffer[*strIndex] > '9')
         return 1;
@@ -68,12 +68,13 @@ int main() {
     size_t size = 0;
     long long sum = 0;
     while (getline(&buffer, &size, in) != -1) {
-        int error = parseLine(buffer, sizeof(buffer) / sizeof(char), &quantity, &price);
+        int error = parseLine(buffer, strlen(buffer), &quantity, &price);
         if (error != 0) {
             printf("неверный формат файла\n");
             return 0;
         }
         sum += quantity * price;
+        quantity = price = 0;
     }
     free(buffer);
     fclose(in);
