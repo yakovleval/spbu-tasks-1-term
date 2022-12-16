@@ -146,7 +146,9 @@ bool testMostFrequent(const int *array, const int size) {
 bool testRandomArrays() {
     int *testArrays[TEST_ARRAYS_NUMBER] = {NULL};
     for (int i = 0; i < TEST_ARRAYS_NUMBER; i++) {
-        testArrays[i] = (int *) calloc(ARRAYS_SIZE, sizeof(int));
+        testArrays[i] = calloc(ARRAYS_SIZE, sizeof(int));
+        if (testArrays[i] == NULL)
+            return false;
         generateRandomArray(testArrays[i], ARRAYS_SIZE);
     }
     bool result = true;
