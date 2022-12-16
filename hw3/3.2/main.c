@@ -1,7 +1,10 @@
 #include <locale.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 #define TEST_ARRAY_SIZE 50
+#define MOD 100
 
 // sorts segment [leftBound, rightBound] in array
 void insertionSort(int *array, const int leftBound, const int rightBound) {
@@ -17,18 +20,27 @@ void insertionSort(int *array, const int leftBound, const int rightBound) {
 // parts segment [leftBound, rightBound] of array
 // returns right bound of left part and left bound of right part
 void partition(int *array, const int leftBound, const int rightBound,
-               int *pLeftIndex, int *pRightIndex, const int pivot) {
+               int *leftPartIndex, int *rightPartIndex, const int pivot) {
 
     int leftIndex = leftBound;
     int rightIndex = rightBound;
     while (leftIndex <= rightIndex) {
-        while (leftIndex <= rightBound && array[leftIndex] < pivot) {
+        while (leftIndex < rightBound && array[leftIndex] < pivot) {
             leftIndex++;
         }
-        while (rightIndex >= leftBound && array[rightIndex] >= pivot) {
+        while (rightIndex > leftBound && array[rightIndex] > pivot) {
             rightIndex--;
         }
-        if (leftIndex <= rightIndex) {
+        if (leftIndex >= rightIndex) {
+            if (leftIndex == rightIndex) {
+                if (leftIndex == leftBound)
+                    leftIndex++;
+                else
+                    rightIndex--;
+            }
+            break;
+        }
+        if (leftIndex < rightIndex) {
             const int tmp = array[leftIndex];
             array[leftIndex] = array[rightIndex];
             array[rightIndex] = tmp;
@@ -36,8 +48,8 @@ void partition(int *array, const int leftBound, const int rightBound,
             rightIndex--;
         }
     }
-    *pLeftIndex = leftIndex;
-    *pRightIndex = rightIndex;
+    *rightPartIndex = leftIndex;
+    *leftPartIndex = rightIndex;
 }
 
 // sorts segment [leftBound, rightBound] in array
@@ -51,26 +63,13 @@ void quickSort(int *array, const int leftBound, const int rightBound) {
         return;
     }
 
-    //chooses pivot
     int pivot = array[leftBound];
-    bool areAllEqual = true;
-    for (int i = leftBound; i < rightBound; i++) {
-        if (array[i] != array[i + 1]) {
-            pivot = array[i] > array[i + 1] ? array[i] : array[i + 1];
-            areAllEqual = false;
-            break;
-        }
-    }
-
-    if (areAllEqual) {
-        return;
-    }
 
     int leftPartIndex = 0;
     int rightPartIndex = 0;
     partition(array, leftBound, rightBound, &leftPartIndex, &rightPartIndex, pivot);
-    quickSort(array, leftBound, rightPartIndex);
-    quickSort(array, leftPartIndex, rightBound);
+    quickSort(array, leftBound, leftPartIndex);
+    quickSort(array, rightPartIndex, rightBound);
 }
 
 bool binSearch(const int *array, const int size, const int key) {
@@ -103,7 +102,7 @@ bool testBinSearch(const int *array, const int size, const int key) {
 
 void generateRandomArray(int *array, const int size) {
     for (int i = 0; i < size; i++) {
-        array[i] = rand() % TEST_ARRAY_SIZE;
+        array[i] = rand() % MOD;
     }
 }
 
@@ -143,15 +142,15 @@ int main() {
     int *randomNumbers = calloc(k, sizeof(int));
 
     for (int i = 0; i < n; i++) {
-        randomArray[i] = rand() % n;
+        randomArray[i] = rand() % MOD;
     }
     for (int i = 0; i < k; i++) {
-        randomNumbers[i] = rand() % n;
+        randomNumbers[i] = rand() % MOD;
     }
 
     quickSort(randomArray, 0, n - 1);
 
-    printf("массив:\n");
+    printf("отсортированный массив:\n");
     for (int i = 0; i < n; i++) {
         printf("%d ", randomArray[i]);
     }
