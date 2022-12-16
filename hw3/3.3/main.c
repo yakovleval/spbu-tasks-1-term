@@ -147,8 +147,10 @@ bool testRandomArrays() {
     int *testArrays[TEST_ARRAYS_NUMBER] = {NULL};
     for (int i = 0; i < TEST_ARRAYS_NUMBER; i++) {
         testArrays[i] = calloc(ARRAYS_SIZE, sizeof(int));
+
         if (testArrays[i] == NULL)
             return false;
+
         generateRandomArray(testArrays[i], ARRAYS_SIZE);
     }
     bool result = true;
