@@ -55,7 +55,7 @@ void partition(int *array, const int leftBound, const int rightBound,
 // sorts segment [leftBound, rightBound] in array
 void quickSort(int *array, const int leftBound, const int rightBound) {
     const int blockSize = rightBound - leftBound + 1;
-    if (blockSize <= 0) {
+    if (blockSize <= 1) {
         return;
     }
     if (blockSize < 10) {
