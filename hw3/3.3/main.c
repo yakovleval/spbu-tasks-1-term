@@ -1,5 +1,13 @@
 #include <stdbool.h>
 #include <locale.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
+#define TEST_ARRAYS_NUMBER 10
+#define ARRAYS_SIZE 50
+
+typedef int Error;
 
 // sorts segment [leftBound, rightBound] in array
 void insertionSort(int *array, const int leftBound, const int rightBound) {
@@ -15,18 +23,27 @@ void insertionSort(int *array, const int leftBound, const int rightBound) {
 // parts segment [leftBound, rightBound] of array
 // returns right bound of left part and left bound of right part
 void partition(int *array, const int leftBound, const int rightBound,
-               int *pLeftIndex, int *pRightIndex, const int pivot) {
+               int *leftPartIndex, int *rightPartIndex, const int pivot) {
 
     int leftIndex = leftBound;
     int rightIndex = rightBound;
     while (leftIndex <= rightIndex) {
-        while (leftIndex <= rightBound && array[leftIndex] < pivot) {
+        while (leftIndex < rightBound && array[leftIndex] < pivot) {
             leftIndex++;
         }
-        while (rightIndex >= leftBound && array[rightIndex] >= pivot) {
+        while (rightIndex > leftBound && array[rightIndex] > pivot) {
             rightIndex--;
         }
-        if (leftIndex <= rightIndex) {
+        if (leftIndex >= rightIndex) {
+            if (leftIndex == rightIndex) {
+                if (leftIndex == leftBound)
+                    leftIndex++;
+                else
+                    rightIndex--;
+            }
+            break;
+        }
+        if (leftIndex < rightIndex) {
             const int tmp = array[leftIndex];
             array[leftIndex] = array[rightIndex];
             array[rightIndex] = tmp;
@@ -34,8 +51,8 @@ void partition(int *array, const int leftBound, const int rightBound,
             rightIndex--;
         }
     }
-    *pLeftIndex = leftIndex;
-    *pRightIndex = rightIndex;
+    *rightPartIndex = leftIndex;
+    *leftPartIndex = rightIndex;
 }
 
 // sorts segment [leftBound, rightBound] in array
@@ -49,30 +66,19 @@ void quickSort(int *array, const int leftBound, const int rightBound) {
         return;
     }
 
-    //chooses pivot
     int pivot = array[leftBound];
-    bool areAllEqual = true;
-    for (int i = leftBound; i < rightBound; i++) {
-        if (array[i] != array[i + 1]) {
-            pivot = array[i] > array[i + 1] ? array[i] : array[i + 1];
-            areAllEqual = false;
-            break;
-        }
-    }
-
-    if (areAllEqual) {
-        return;
-    }
 
     int leftPartIndex = 0;
     int rightPartIndex = 0;
     partition(array, leftBound, rightBound, &leftPartIndex, &rightPartIndex, pivot);
-    quickSort(array, leftBound, rightPartIndex);
-    quickSort(array, leftPartIndex, rightBound);
+    quickSort(array, leftBound, leftPartIndex);
+    quickSort(array, rightPartIndex, rightBound);
 }
 
-int mostFrequent(const int *array, const int size) {
+Error mostFrequent(const int *array, const int size, int *result) {
     int *sortedArray = calloc(size, sizeof(int));
+    if (sortedArray == NULL)
+        return 1;
     memcpy(sortedArray, array, size * sizeof(int));
     quickSort(sortedArray, 0, size - 1);
     int answer = sortedArray[0];
@@ -97,7 +103,8 @@ int mostFrequent(const int *array, const int size) {
         count = 1;
     }
     free(sortedArray);
-    return answer;
+    *result = answer;
+    return 0;
 }
 
 bool checkMostFrequent(const int *array, const int size, const int element) {
@@ -129,14 +136,14 @@ void generateRandomArray(int *array, const int size) {
 }
 
 bool testMostFrequent(const int *array, const int size) {
-    return checkMostFrequent(array, size, mostFrequent(array, size));
+    int result = 0;
+    int error = mostFrequent(array, size, &result);
+    if (error != 0)
+        return false;
+    return checkMostFrequent(array, size, result);
 }
 
 bool testRandomArrays() {
-//    const int testArraysNumber = 10;
-//    const int arraysSize = 50;
-#define TEST_ARRAYS_NUMBER 10
-#define ARRAYS_SIZE 50
     int *testArrays[TEST_ARRAYS_NUMBER] = {NULL};
     for (int i = 0; i < TEST_ARRAYS_NUMBER; i++) {
         testArrays[i] = (int *) calloc(ARRAYS_SIZE, sizeof(int));
