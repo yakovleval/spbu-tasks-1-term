@@ -1,5 +1,7 @@
 #include <locale.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define TEST_ARRAYS_NUMBER 10
 #define ARRAYS_SIZE 50
@@ -18,18 +20,27 @@ void insertionSort(int *array, const int leftBound, const int rightBound) {
 // parts segment [leftBound, rightBound] of array
 // returns right bound of left part and left bound of right part
 void partition(int *array, const int leftBound, const int rightBound,
-               int *pLeftIndex, int *pRightIndex, const int pivot) {
+               int *leftPartIndex, int *rightPartIndex, const int pivot) {
 
     int leftIndex = leftBound;
     int rightIndex = rightBound;
     while (leftIndex <= rightIndex) {
-        while (leftIndex <= rightBound && array[leftIndex] < pivot) {
+        while (leftIndex < rightBound && array[leftIndex] < pivot) {
             leftIndex++;
         }
-        while (rightIndex >= leftBound && array[rightIndex] >= pivot) {
+        while (rightIndex > leftBound && array[rightIndex] > pivot) {
             rightIndex--;
         }
-        if (leftIndex <= rightIndex) {
+        if (leftIndex >= rightIndex) {
+            if (leftIndex == rightIndex) {
+                if (leftIndex == leftBound)
+                    leftIndex++;
+                else
+                    rightIndex--;
+            }
+            break;
+        }
+        if (leftIndex < rightIndex) {
             const int tmp = array[leftIndex];
             array[leftIndex] = array[rightIndex];
             array[rightIndex] = tmp;
@@ -37,8 +48,8 @@ void partition(int *array, const int leftBound, const int rightBound,
             rightIndex--;
         }
     }
-    *pLeftIndex = leftIndex;
-    *pRightIndex = rightIndex;
+    *rightPartIndex = leftIndex;
+    *leftPartIndex = rightIndex;
 }
 
 // sorts segment [leftBound, rightBound] in array
@@ -54,29 +65,17 @@ void quickSort(int *array, const int leftBound, const int rightBound) {
 
     //chooses pivot
     int pivot = array[leftBound];
-    bool areAllEqual = true;
-    for (int i = leftBound; i < rightBound; i++) {
-        if (array[i] != array[i + 1]) {
-            pivot = array[i] > array[i + 1] ? array[i] : array[i + 1];
-            areAllEqual = false;
-            break;
-        }
-    }
-
-    if (areAllEqual) {
-        return;
-    }
 
     int leftPartIndex = 0;
     int rightPartIndex = 0;
     partition(array, leftBound, rightBound, &leftPartIndex, &rightPartIndex, pivot);
-    quickSort(array, leftBound, rightPartIndex);
-    quickSort(array, leftPartIndex, rightBound);
+    quickSort(array, leftBound, leftPartIndex);
+    quickSort(array, rightPartIndex, rightBound);
 }
 
-bool isEqual(const int *leftArray, const int *rightArray, const int size) {
-    for (int i = 0; i < size; i++) {
-        if (leftArray[i] != rightArray[i]) {
+bool isSorted(const int *array, const int size) {
+    for (int i = 0; i < size - 1; i++) {
+        if (array[i] > array[i + 1]) {
             return false;
         }
     }
@@ -84,19 +83,19 @@ bool isEqual(const int *leftArray, const int *rightArray, const int size) {
 }
 
 bool testQuickSort(int *array, const int size) {
-    int *sortedArray = calloc(size, sizeof(int));
-    memcpy(array, sortedArray, size * sizeof(int));
-    insertionSort(sortedArray, 0, size - 1);
     quickSort(array, 0, size - 1);
-    bool result = isEqual(sortedArray, array, size);
-    free(sortedArray);
-    return result;
+    return isSorted(array, size);
 }
 
 void generateRandomArray(int *array, const int size) {
     for (int i = 0; i < size; i++) {
         array[i] = rand();
     }
+}
+
+bool testSimpleArray() {
+    int testArray[] = {11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+    return testQuickSort(testArray, sizeof(testArray)/sizeof(int));
 }
 
 bool testRandomArrays() {
@@ -116,8 +115,15 @@ bool testRandomArrays() {
     return result;
 }
 
+bool testAllEqual() {
+    int testArray[] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+    return testQuickSort(testArray, sizeof(testArray)/sizeof(int));
+}
+
 bool isPassed() {
-    return testRandomArrays();
+    return testSimpleArray() &&
+           testRandomArrays() &&
+           testAllEqual();
 }
 
 int main() {
