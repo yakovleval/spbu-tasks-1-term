@@ -1,7 +1,7 @@
 #include <locale.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <string.h>
+#include <stdio.h>
 
 #define TEST_ARRAYS_NUMBER 10
 #define ARRAYS_SIZE 50
