@@ -17,12 +17,28 @@ int main() {
         printf("incorrect input, try again:\n");
         scanf("%d%d", &n, &m);
     }
-    mergeSort(&list, NUMBER);
+    mergeSort(&list, NUMBER, DESCENDGING);
     int listLength = listLen(&list);
     n = n < listLength ? n : listLength;
-    Product *current = list;
-    for (int i = 0; i < n && current != NULL; i++) {
-        printProduct(current);
+    Product **current = &list;
+    printf("products with 50%% sale:\n");
+    for (int i = 0; i < n; i++) {
+        printProduct(*current);
+        deleteProduct(current);
+    }
+    listLength = listLen(&list);
+    m = m < listLength ? m : listLength;
+    current = &list;
+    mergeSort(&list, NAME, ASCENDING);
+    printf("products with 25%% sale:\n");
+    for (int i = 0; i < m; i++) {
+        printProduct(*current);
+        deleteProduct(current);
+    }
+    printf("products with no sale:\n");
+    for (current = &list; *current != NULL;) {
+        printProduct(*current);
+        deleteProduct(current);
     }
     return 0;
 }

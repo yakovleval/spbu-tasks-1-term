@@ -18,14 +18,14 @@ Error loadList(Product **iterator, const char *file) {
         return 1;
     }
     char name[MAX_SIZE] = {0};
-    char number[MAX_SIZE] = {0};
+    int number;
     while (!feof(in)) {
-        fscanf(in, " %255[^-]-%255s", name, number);
+        fscanf(in, " %255[^-]-%d", name, &number);
         *iterator = (Product *) malloc(sizeof(Product));
         if (*iterator == NULL)
             return 1;
         strcpy((*iterator)->name, name);
-        strcpy((*iterator)->number, number);
+        (*iterator)->number = number;
         (*iterator)->next = NULL;
         iterator = &(*iterator)->next;
     }
@@ -33,7 +33,7 @@ Error loadList(Product **iterator, const char *file) {
     return 0;
 }
 
-Error addPerson(Product **iterator, const char *name, const char *number) {
+Error addPerson(Product **iterator, const char *name, int number) {
     while (*iterator != NULL) {
         iterator = &(*iterator)->next;
     }
@@ -41,14 +41,14 @@ Error addPerson(Product **iterator, const char *name, const char *number) {
     if (*iterator == NULL)
         return 1;
     strcpy((*iterator)->name, name);
-    strcpy((*iterator)->number, number);
+    (*iterator)->number = number;
     (*iterator)->next = NULL;
     return 0;
 }
 
 void printList(Product **iterator) {
     while (*iterator != NULL) {
-        printf("%s-%s", (*iterator)->name, (*iterator)->number);
+        printf("%s-%d", (*iterator)->name, (*iterator)->number);
         if ((*iterator)->next != NULL) {
             printf(" -> ");
         }
@@ -65,10 +65,16 @@ void freeList(Product *iterator) {
     }
 }
 
-Product *next(Product *current) {
-    return current->next;
+Product **next(Product **current) {
+    return &(*current)->next;
 }
 
 void printProduct(Product *current) {
-    printf("current")
+    printf("%s - %d\n", current->name, current->number);
+}
+
+void deleteProduct(Product **product) {
+    Product *toDelete = *product;
+    *product = (*product)->next;
+    free(toDelete);
 }

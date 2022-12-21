@@ -7,9 +7,10 @@ enum SORT_BY {
     NUMBER = 1
 };
 
-int compare(Product *left, Product *right, enum SORT_BY compareBy);
-Product *merge(Product *left, Product *right, enum SORT_BY sortBy);
-void split(Product *list, Product **leftPart, Product **rightPart);
-void mergeSort(Product **head, enum SORT_BY sortBy);
+enum ORDER {
+    ASCENDING = 1, DESCENDGING = -1
+};
+
+void mergeSort(Product **head, enum SORT_BY sortBy, enum ORDER order);
 
 #endif //INC_6_3_MERGESORT_H

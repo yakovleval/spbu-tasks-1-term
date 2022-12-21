@@ -1,12 +1,13 @@
 #include <string.h>
 #include "mergesort.h"
 
-int compare(Product *left, Product *right, enum SORT_BY compareBy) {
-    return compareBy == NAME ? strcmp(left->name, right->name) :
-           strcmp(left->number, right->number);
+int compare(Product *left, Product *right, enum SORT_BY compareBy, enum ORDER order) {
+    return compareBy == NAME ?
+            order * strcmp(left->name, right->name) :
+            order * (left->number - right->number);
 }
 
-Product *merge(Product *left, Product *right, enum SORT_BY sortBy) {
+Product *merge(Product *left, Product *right, enum SORT_BY sortBy, enum ORDER order) {
     if (left == NULL) {
         return right;
     }
@@ -14,12 +15,12 @@ Product *merge(Product *left, Product *right, enum SORT_BY sortBy) {
         return left;
     }
     Product *result = NULL;
-    if (compare(left, right, sortBy) <= 0) {
+    if (compare(left, right, sortBy, order) <= 0) {
         result = left;
-        result->next = merge(left->next, right, sortBy);
+        result->next = merge(left->next, right, sortBy, order);
     } else {
         result = right;
-        result->next = merge(left, right->next, sortBy);
+        result->next = merge(left, right->next, sortBy, order);
     }
     return result;
 }
@@ -44,14 +45,14 @@ void split(Product *list, Product **leftPart, Product **rightPart) {
     slow->next = NULL;
 }
 
-void mergeSort(Product **head, enum SORT_BY sortBy) {
+void mergeSort(Product **head, enum SORT_BY sortBy, enum ORDER order) {
     if (*head == NULL || (*head)->next == NULL) {
         return;
     }
     Product *left = NULL;
     Product *right = NULL;
     split(*head, &left, &right);
-    mergeSort(&left, sortBy);
-    mergeSort(&right, sortBy);
-    *head = merge(left, right, sortBy);
+    mergeSort(&left, sortBy, order);
+    mergeSort(&right, sortBy, order);
+    *head = merge(left, right, sortBy, order);
 }

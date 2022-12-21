@@ -7,7 +7,7 @@ typedef int Error;
 
 typedef struct Product {
     char name[MAX_SIZE];
-    char number[MAX_SIZE]   ;
+    int number;
     struct Product *next;
 } Product;
 
@@ -27,6 +27,10 @@ void saveList(Product **iterator);
 
 void freeList(Product *iterator);
 
-Product *next(Product *current);
+Product **next(Product **current);
+
+void printProduct(Product *current);
+
+void deleteProduct(Product **product);
 
 #endif //INC_6_3_PRODUCT_H
