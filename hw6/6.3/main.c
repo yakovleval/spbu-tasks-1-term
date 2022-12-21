@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include "mergesort.h"
 
-bool cmpLists(Person *left, Person *right) {
+bool cmpLists(Product *left, Product *right) {
     while (left != NULL && right != NULL) {
         if (strcmp(left->name, right->name) != 0 ||
         strcmp(left->number, right->number) != 0) {
@@ -21,9 +21,9 @@ bool cmpLists(Person *left, Person *right) {
 
 bool testOneElement() {
     bool result = true;
-    Person person = {"a", "1", NULL};
-    Person *list = &person;
-    Person expected[] = {{"a", "1", NULL}};
+    Product person = {"a", "1", NULL};
+    Product *list = &person;
+    Product expected[] = {{"a", "1", NULL}};
     mergeSort(&list, NAME);
     result &= cmpLists(list, expected);
     mergeSort(&list, NUMBER);
@@ -32,12 +32,12 @@ bool testOneElement() {
 }
 
 bool testList() {
-    Person list[] = {{"b", "2", &list[1]}, {"a", "3", &list[2]}, {"c", "1", NULL}};
-    Person expectedByName[] = {{"a", "3", &list[1]}, {"b", "2", &list[2]}, {"c", "1", NULL}};
-    Person expectedByNumber[] = {{"c", "1", &list[1]}, {"b", "2", &list[2]}, {"a", "3", NULL}};
-    Person *sourceList = &list[0];
-    Person *listExpByName = &expectedByName[0];
-    Person *listExpByNumber = &expectedByNumber[0];
+    Product list[] = {{"b", "2", &list[1]}, {"a", "3", &list[2]}, {"c", "1", NULL}};
+    Product expectedByName[] = {{"a", "3", &list[1]}, {"b", "2", &list[2]}, {"c", "1", NULL}};
+    Product expectedByNumber[] = {{"c", "1", &list[1]}, {"b", "2", &list[2]}, {"a", "3", NULL}};
+    Product *sourceList = &list[0];
+    Product *listExpByName = &expectedByName[0];
+    Product *listExpByNumber = &expectedByNumber[0];
     bool result = true;
     mergeSort(&sourceList, NAME);
     result &= cmpLists(listExpByName, expectedByName);
@@ -57,7 +57,7 @@ int main() {
         printf("тесты не пройдены\n");
         return 0;
     }
-    Person *list = NULL;
+    Product *list = NULL;
     loadList(&list, "data.txt");
     printf("введите способ сортировки (0 - по имени, 1 - по номеру):\n");
     int choice = 0;
