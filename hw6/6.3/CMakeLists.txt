@@ -3,4 +3,4 @@ project(6_3 C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(6_3 main.c person.c)
+add_executable(6_3 main.c person.c mergesort.c mergesort.h)
